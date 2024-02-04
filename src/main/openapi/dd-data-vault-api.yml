@@ -20,7 +20,7 @@ servers:
   - url: http://localhost:20365/
 
 info:
-  description: Service for ...
+  description: Service for managing a Data Vault
   version: ${project.version}
   title: dd-data-vault-api
   contact:
@@ -30,7 +30,57 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 
 paths:
-  # API endpoints
+  /:
+    get:
+      summary: Returns a description of the service.
+      responses:
+        200:
+          description: description of the service
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: a plain text, human readable description of the service
+                example: |
+                  Data Vault API Running (v${project.version})
+
+  /jobs:
+    get:
+      summary: Returns a list of all jobs
+      responses:
+        200:
+          description: A list of all jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Job'
+    post:
+      summary: Submits a new job
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Job'
+      responses:
+        201:
+          description: The job has been submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
 
 components:
-  # Reusable schemas
+  schemas:
+    Job:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier of the job
+        batch:
+          type: string
+          format: path
+          description: The path to the batch directory
