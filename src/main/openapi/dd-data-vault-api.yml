@@ -71,6 +71,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/Job'
 
+  /jobs/{id}:
+    get:
+      summary: Returns the job with the specified id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique identifier of the job
+      responses:
+        200:
+          description: The job with the specified id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        404:
+          description: No job with the specified id was found
+
 components:
   schemas:
     Job:
