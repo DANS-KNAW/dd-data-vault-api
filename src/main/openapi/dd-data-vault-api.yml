@@ -44,36 +44,36 @@ paths:
                 example: |
                   Data Vault API Running (v${project.version})
 
-  /jobs:
+  /imports:
     get:
-      summary: Returns a list of all jobs
+      summary: Returns a list of all current import jobs and their status
       responses:
         200:
-          description: A list of all jobs
+          description: A list of all current import jobs
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Job'
+                  $ref: '#/components/schemas/ImportJobStatus'
     post:
-      summary: Submits a new job
+      summary: Submits a new import job
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Job'
+              $ref: '#/components/schemas/ImportCommand'
       responses:
         201:
           description: The job has been submitted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Job'
+                $ref: '#/components/schemas/ImportJobStatus'
 
-  /jobs/{id}:
+  /imports/{id}:
     get:
-      summary: Returns the job with the specified id
+      summary: Returns the import job with the specified id
       parameters:
         - name: id
           in: path
@@ -88,20 +88,41 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Job'
+                $ref: '#/components/schemas/ImportJobStatus'
         404:
           description: No job with the specified id was found
 
 components:
   schemas:
-    Job:
+    ImportCommand:
+      type: object
+      properties:
+        path:
+          type: string
+          format: path
+          description: The path to the object import or batch directory
+        singleObject:
+          type: boolean
+          description: Whether the import is for a single object or a batch
+    ImportJobStatus:
       type: object
       properties:
         id:
           type: string
           format: uuid
           description: The unique identifier of the job
-        batch:
+        path:
           type: string
           format: path
-          description: The path to the batch directory
+          description: The path to the object import or batch directory
+        singleObject:
+          type: boolean
+          description: Whether the import is for a single object or a batch
+        status:
+          type: string
+          description: The current status of the job
+          enum:
+            - PENDING
+            - RUNNING
+            - SUCCESS
+            - FAILED
