@@ -92,6 +92,17 @@ paths:
         404:
           description: No job with the specified id was found
 
+  /layers:
+    post:
+      summary: Creates a new top layer, closing and archiving the current top layer
+      responses:
+        201:
+          description: The new top layer has been created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LayerStatus'
+
 components:
   schemas:
     ImportCommand:
@@ -126,3 +137,9 @@ components:
             - RUNNING
             - SUCCESS
             - FAILED
+    LayerStatus:
+      type: object
+      properties:
+        layerId:
+          type: long
+          description: The timestamp of the layer, in milliseconds since the epoch
