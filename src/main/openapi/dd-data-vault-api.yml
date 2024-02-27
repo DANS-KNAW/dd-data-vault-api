@@ -114,6 +114,7 @@ components:
           description: The path to the object import or batch directory
         singleObject:
           type: boolean
+          default: false
           description: Whether the import is for a single object or a batch
     ImportJobStatus:
       type: object
