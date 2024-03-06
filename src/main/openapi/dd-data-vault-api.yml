@@ -103,6 +103,36 @@ paths:
               schema:
                 $ref: '#/components/schemas/LayerStatus'
 
+  /layers/{layerId}:
+    get:
+      summary: Returns the status of the layer with the specified id
+      parameters:
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: long
+          description: The timestamp of the layer, in milliseconds since the epoch
+      responses:
+        200:
+          description: The status of the layer with the specified id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LayerStatus'
+        404:
+          description: No layer with the specified id was found
+  /layers/top:
+    get:
+      summary: Returns the status of the top layer
+      responses:
+        200:
+          description: The status of the top layer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LayerStatus'
+
 components:
   schemas:
     ImportCommand:
@@ -149,3 +179,6 @@ components:
         layerId:
           type: long
           description: The timestamp of the layer, in milliseconds since the epoch
+        sizeInBytes:
+          type: long
+          description: The size of the layer in bytes
