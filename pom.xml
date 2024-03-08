@@ -28,7 +28,7 @@
     <artifactId>dd-data-vault-api</artifactId>
     <version>0.1.1-SNAPSHOT</version>
 
-    <name>Dd Data Vault Api</name>
+    <name>DD Data Vault API</name>
     <url>https://github.com/DANS-KNAW/dd-data-vault-api</url>
     <description>API of the DANS Data Vault service</description>
     <inceptionYear>2024</inceptionYear>
