@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>dd-data-vault-api</artifactId>
-    <version>0.4.0</version>
+    <version>0.4.1-SNAPSHOT</version>
 
     <name>DD Data Vault API</name>
     <url>https://github.com/DANS-KNAW/dd-data-vault-api</url>
@@ -35,7 +35,7 @@
 
     <scm>
         <developerConnection>scm:git:ssh://github.com/DANS-KNAW/dd-data-vault-api</developerConnection>
-        <tag>v0.4.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <build>
