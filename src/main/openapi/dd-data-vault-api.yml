@@ -32,7 +32,16 @@ info:
 paths:
   /:
     get:
+      operationId: rootGet
       summary: Returns a description of the service.
+      parameters:
+        - name: Accept
+          in: header
+          required: false
+          schema:
+            type: string
+            enum: [ application/json, text/plain ]
+            default: application/json
       responses:
         200:
           description: description of the service
@@ -43,9 +52,13 @@ paths:
                 description: a plain text, human readable description of the service
                 example: |
                   Data Vault API Running (v${project.version})
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppInfo'
 
   /imports:
     get:
+      operationId: importsGet
       summary: Returns a list of all current import jobs and their status
       responses:
         200:
@@ -57,6 +70,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/ImportJobStatus'
     post:
+      operationId: importsPost
       summary: Submits a new import job
       requestBody:
         content:
@@ -73,6 +87,7 @@ paths:
 
   /imports/{id}:
     get:
+      operationId: importsIdGet
       summary: Returns the import job with the specified id
       parameters:
         - name: id
@@ -94,6 +109,7 @@ paths:
 
   /layers:
     post:
+      operationId: layersPost
       summary: Creates a new top layer, closing and archiving the current top layer
       responses:
         201:
@@ -105,13 +121,15 @@ paths:
 
   /layers/{layerId}:
     get:
+      operationId: layersIdGet
       summary: Returns the status of the layer with the specified id
       parameters:
         - name: layerId
           in: path
           required: true
           schema:
-            type: long
+            type: integer
+            format: int64
           description: The timestamp of the layer, in milliseconds since the epoch
       responses:
         200:
@@ -124,6 +142,7 @@ paths:
           description: No layer with the specified id was found
   /layers/top:
     get:
+      operationId: layersTopGet
       summary: Returns the status of the top layer
       responses:
         200:
@@ -132,9 +151,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LayerStatus'
+  /objects/{id}/versions/{nr}:
+    get:
+      operationId: objectsIdVersionsNrGet
+      summary: Returns the properties of the given object version
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: nr
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Information object the requested version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OcflObjectVersion'
+
 
 components:
   schemas:
+    AppInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+
     ImportCommand:
       type: object
       properties:
@@ -150,7 +200,7 @@ components:
           type: boolean
           default: false
           description: Whether to accept timestamp directories in the batch directory. By default the version directories are expected to be the
-           exact version numbers of the versions to be created.
+            exact version numbers of the versions to be created.
     ImportJobStatus:
       type: object
       properties:
@@ -177,8 +227,21 @@ components:
       type: object
       properties:
         layerId:
-          type: long
+          type: integer
+          format: int64
           description: The timestamp of the layer, in milliseconds since the epoch
         sizeInBytes:
-          type: long
+          type: integer
+          format: int64
           description: The size of the layer in bytes
+
+    OcflObjectVersion:
+      type: object
+      properties:
+        versionNumber:
+          type: integer
+          description: The version number
+        created:
+          type: string
+          format: date-time
+
