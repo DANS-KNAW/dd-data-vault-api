@@ -34,6 +34,14 @@ paths:
     get:
       operationId: rootGet
       summary: Returns a description of the service.
+      parameters:
+        - name: Accept
+          in: header
+          required: false
+          schema:
+            type: string
+            enum: [ application/json, text/plain ]
+            default: application/json
       responses:
         200:
           description: description of the service
@@ -44,6 +52,9 @@ paths:
                 description: a plain text, human readable description of the service
                 example: |
                   Data Vault API Running (v${project.version})
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppInfo'
 
   /imports:
     get:
@@ -142,6 +153,7 @@ paths:
                 $ref: '#/components/schemas/LayerStatus'
   /objects/{id}/versions/{nr}:
     get:
+      operationId: objectsIdVersionsNrGet
       summary: Returns the properties of the given object version
       parameters:
         - name: id
@@ -165,6 +177,14 @@ paths:
 
 components:
   schemas:
+    AppInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+
     ImportCommand:
       type: object
       properties:
