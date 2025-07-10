@@ -22,5 +22,5 @@ mvn initialize # To ensure API definition is downloaded
 
 echo "Deploying Swagger UI and API definition..."
 sh target/add-swagger-ui.sh
-cp src/main/resources/openapi/*.yml docs/api.yml
+cp src/main/openapi/*.yml docs/api.yml
 echo "DONE"
