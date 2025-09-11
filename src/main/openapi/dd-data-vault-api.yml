@@ -140,6 +140,7 @@ paths:
                 $ref: '#/components/schemas/LayerStatus'
         404:
           description: No layer with the specified id was found
+
   /layers/top:
     get:
       operationId: layersTopGet
@@ -151,6 +152,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LayerStatus'
+
   /objects/{id}/versions/{nr}:
     get:
       operationId: objectsIdVersionsNrGet
@@ -174,9 +176,93 @@ paths:
               schema:
                 $ref: '#/components/schemas/OcflObjectVersion'
 
+  /consistency-checks:
+    post:
+      operationId: consistencyChecksPost
+      summary: Requests a consistency check of the data vault
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsistencyCheckRequest'
+      responses:
+        202:
+          description: The consistency check has been requested
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsistencyCheckResult'
+
+  /consistency-checks/{id}:
+    get:
+      operationId: consistencyChecksIdGet
+      summary: Returns the status of the consistency check with the specified id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: The status of the consistency check with the specified id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsistencyCheckResult'
+        404:
+          description: No consistency check with the specified id was found
 
 components:
   schemas:
+    ConsistencyCheckRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [ LAYER_IDS, LISTING_RECORDS ]
+          description: The type of consistency check to perform
+        layerId:
+          type: integer
+          format: int64
+          description: The ID of the layer to perform the consistency check on (only applicable for LISTING_RECORDS)
+
+    ConsistencyCheckResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier of the consistency check
+        type:
+          type: string
+          enum: [ LAYER_IDS, LISTING_RECORDS ]
+          description: The type of consistency check that was performed
+        layerId:
+          type: integer
+          format: int64
+          description: The ID of the layer that was checked (only applicable for LISTING_RECORDS)
+        created:
+          type: string
+          format: date-time
+          description: The date and time when the consistency check was performed
+        started:
+          type: string
+          format: date-time
+          description: The date and time when the consistency check was started
+        finished:
+          type: string
+          format: date-time
+          description: The date and time when the consistency check was finished
+        result:
+          type: string
+          enum: [ OK, NOT_OK, ERROR ]
+          description: The result of the consistency check
+        message:
+          type: string
+          description: A message describing the result of the consistency check
+
     AppInfo:
       type: object
       properties:
