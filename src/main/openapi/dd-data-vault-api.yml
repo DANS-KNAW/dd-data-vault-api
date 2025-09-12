@@ -153,6 +153,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/LayerStatus'
 
+  /layers/ids:
+    get:
+      operationId: layersIdsGet
+      summary: Returns a list of all layer ids
+      responses:
+        200:
+          description: A list of all layer ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+
   /objects/{id}/versions/{nr}:
     get:
       operationId: objectsIdVersionsNrGet
