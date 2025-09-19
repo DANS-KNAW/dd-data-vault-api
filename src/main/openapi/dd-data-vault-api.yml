@@ -324,6 +324,21 @@ components:
             - RUNNING
             - SUCCESS
             - FAILED
+        created:
+          type: string
+          format: date-time
+          description: The date and time when the job was created
+        started:
+          type: string
+          format: date-time
+          description: The date and time when the job was started
+        finished:
+          type: string
+          format: date-time
+          description: The date and time when the job was finished
+        message:
+          type: string
+          description: A message describing the current status of the job
     LayerStatus:
       type: object
       properties:
