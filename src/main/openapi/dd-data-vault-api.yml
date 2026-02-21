@@ -297,11 +297,6 @@ components:
           type: boolean
           default: false
           description: Whether the import is for a single object or a batch
-        acceptTimestampVersionDirectories:
-          type: boolean
-          default: false
-          description: Whether to accept timestamp directories in the batch directory. By default the version directories are expected to be the
-            exact version numbers of the versions to be created.
     ImportJobStatus:
       type: object
       properties:
