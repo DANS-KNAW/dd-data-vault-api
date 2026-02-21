@@ -141,6 +141,24 @@ paths:
         404:
           description: No layer with the specified id was found
 
+  /layers/{layerId}/archive:
+    post:
+      operationId: layersIdArchivePost
+      summary: Requests the archiving of the layer with the specified id. The operation may be performed asynchronously, so the caller should check the layer's status to determine when the archiving is complete.
+      parameters:
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The timestamp of the layer, in milliseconds since the epoch
+      responses:
+        202:
+          description: The request to archive the layer has been accepted
+        404:
+          description: No layer with the specified id was found
+
   /layers/top:
     get:
       operationId: layersTopGet
