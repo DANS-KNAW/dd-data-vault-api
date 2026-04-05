@@ -43,7 +43,7 @@ paths:
             enum: [ application/json, text/plain ]
             default: application/json
       responses:
-        200:
+        '200':
           description: description of the service
           content:
             text/plain:
@@ -61,7 +61,7 @@ paths:
       operationId: importsGet
       summary: Returns a list of all current import jobs and their status
       responses:
-        200:
+        '200':
           description: A list of all current import jobs
           content:
             application/json:
@@ -78,7 +78,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ImportCommand'
       responses:
-        201:
+        '201':
           description: The job has been submitted
           content:
             application/json:
@@ -98,13 +98,13 @@ paths:
             format: uuid
           description: The unique identifier of the job
       responses:
-        200:
+        '200':
           description: The job with the specified id
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImportJobStatus'
-        404:
+        '404':
           description: No job with the specified id was found
 
   /layers:
@@ -112,7 +112,7 @@ paths:
       operationId: layersPost
       summary: Creates a new top layer, closing and archiving the current top layer
       responses:
-        201:
+        '201':
           description: The new top layer has been created
           content:
             application/json:
@@ -132,19 +132,19 @@ paths:
             format: int64
           description: The timestamp of the layer, in milliseconds since the epoch
       responses:
-        200:
+        '200':
           description: The status of the layer with the specified id
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/LayerStatus'
-        404:
+        '404':
           description: No layer with the specified id was found
 
-  /layers/{layerId}/archive:
+  /layers/{layerId}/close:
     post:
-      operationId: layersIdArchivePost
-      summary: Requests the archiving of the layer with the specified id. The operation may be performed asynchronously, so the caller should check the layer's status to determine when the archiving is complete.
+      operationId: layersIdClosePost
+      summary: Closes the layer with the specified id. This is a synchronous operation.
       parameters:
         - name: layerId
           in: path
@@ -154,9 +154,72 @@ paths:
             format: int64
           description: The timestamp of the layer, in milliseconds since the epoch
       responses:
-        202:
+        '200':
+          description: The layer has been closed.
+        '400':
+          description: The layer with the specified id cannot be archived, because its current state is not OPEN.
+        '404':
+          description: No layer with the specified id was found
+
+  /layers/{layerId}/archive:
+    post:
+      operationId: layersIdArchivePost
+      summary: Requests the archiving of the layer with the specified id. The operation may be performed asynchronously,
+        so the caller should check the layer's status to determine when the archiving is complete.
+      parameters:
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The timestamp of the layer, in milliseconds since the epoch
+      responses:
+        '202':
           description: The request to archive the layer has been accepted
-        404:
+        '400':
+          description: The layer with the specified id cannot be archived, because its current state is not CLOSED or there is already an archive file.
+            To overwrite an archive file with the contents of a reopened layer use the /rearchive endpoint.
+        '404':
+          description: No layer with the specified id was found
+
+  /layers/{layerId}/rearchive:
+    post:
+      operationId: layersIdRearchivePost
+      summary: Requests the rearchiving of the layer with the specified id. The operation may be performed asynchronously,
+        so the caller should check the layer's status to determine when the archiving is complete.
+      parameters:
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The timestamp of the layer, in milliseconds since the epoch
+      responses:
+        '202':
+          description: The request to archive the layer has been accepted
+        '404':
+          description: No layer with the specified id was found
+
+  /layers/{layerId}/reopen:
+    post:
+      operationId: layersIdReopenPost
+      summary: Requests the reopening of the layer with the specified id. The operation may be performed asynchronously, so the caller should check the layer's status to determine when the reopening is complete.
+      parameters:
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The timestamp of the layer, in milliseconds since the epoch
+      responses:
+        '202':
+          description: The request to reopen the layer has been accepted
+        '400':
+          description: The layer with the specified id cannot be reopened, because its current state is not ARCHIVED or CLOSED
+        '404':
           description: No layer with the specified id was found
 
   /layers/top:
@@ -164,7 +227,7 @@ paths:
       operationId: layersTopGet
       summary: Returns the status of the top layer
       responses:
-        200:
+        '200':
           description: The status of the top layer
           content:
             application/json:
@@ -176,7 +239,7 @@ paths:
       operationId: layersIdsGet
       summary: Returns a list of all layer ids
       responses:
-        200:
+        '200':
           description: A list of all layer ids
           content:
             application/json:
@@ -202,7 +265,7 @@ paths:
           schema:
             type: integer
       responses:
-        200:
+        '200':
           description: Information object the requested version
           content:
             application/json:
@@ -219,7 +282,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ConsistencyCheckRequest'
       responses:
-        202:
+        '202':
           description: The consistency check has been requested
           content:
             application/json:
@@ -238,13 +301,13 @@ paths:
             type: string
             format: uuid
       responses:
-        200:
+        '200':
           description: The status of the consistency check with the specified id
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConsistencyCheckResult'
-        404:
+        '404':
           description: No consistency check with the specified id was found
 
 components:
