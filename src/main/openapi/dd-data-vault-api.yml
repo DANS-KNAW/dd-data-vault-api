@@ -178,6 +178,40 @@ paths:
         '409':
           description: The top layer is not in the OPEN state
 
+  /layers/top/delete-directory:
+    post:
+      operationId: layersTopDeleteDirectoryPost
+      summary: Deletes a directory from the top layer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteDirectoryRequest'
+      responses:
+        '200':
+          description: The directory has been deleted
+        '404':
+          description: The top layer was not found
+        '409':
+          description: The top layer is not in the OPEN state
+
+  /layers/top/delete-files:
+    post:
+      operationId: layersTopDeleteFilesPost
+      summary: Deletes files from the top layer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteFilesRequest'
+      responses:
+        '200':
+          description: The files have been deleted
+        '404':
+          description: The top layer was not found
+        '409':
+          description: The top layer is not in the OPEN state
+
   /layers/top/copy-directory-into:
     post:
       operationId: layersTopCopyDirectoryIntoPost
