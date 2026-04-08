@@ -161,10 +161,10 @@ paths:
         '409':
           description: The layer is not in the CLOSED state
 
-  /layers/top/create-directory:
+  /itemstore/create-directory:
     post:
-      operationId: layersTopCreateDirectoryPost
-      summary: Creates a new directory in the top layer
+      operationId: itemstoreCreateDirectoryPost
+      summary: Creates a new directory in the item store
       requestBody:
         content:
           application/json:
@@ -174,14 +174,14 @@ paths:
         '200':
           description: The directory has been created
         '404':
-          description: The top layer was not found
+          description: The item store was not found
         '409':
-          description: The top layer is not in the OPEN state
+          description: The item store is not in the OPEN state
 
-  /layers/top/delete-directory:
+  /itemstore/delete-directory:
     post:
-      operationId: layersTopDeleteDirectoryPost
-      summary: Deletes a directory from the top layer
+      operationId: itemstoreDeleteDirectoryPost
+      summary: Deletes a directory from the item store
       requestBody:
         content:
           application/json:
@@ -191,14 +191,14 @@ paths:
         '200':
           description: The directory has been deleted
         '404':
-          description: The top layer was not found
+          description: The item store was not found
         '409':
-          description: The top layer is not in the OPEN state
+          description: The item store is not in the OPEN state
 
-  /layers/top/delete-files:
+  /itemstore/delete-files:
     post:
-      operationId: layersTopDeleteFilesPost
-      summary: Deletes files from the top layer
+      operationId: itemstoreDeleteFilesPost
+      summary: Deletes files from the item store
       requestBody:
         content:
           application/json:
@@ -208,14 +208,14 @@ paths:
         '200':
           description: The files have been deleted
         '404':
-          description: The top layer was not found
+          description: The item store was not found
         '409':
-          description: The top layer is not in the OPEN state
+          description: The item store is not in the OPEN state
 
-  /layers/top/copy-directory-into:
+  /itemstore/copy-directory-into:
     post:
-      operationId: layersTopCopyDirectoryIntoPost
-      summary: Copies a directory into the top layer
+      operationId: itemstoreCopyDirectoryIntoPost
+      summary: Copies a directory into the item store
       requestBody:
         content:
           application/json:
@@ -225,14 +225,14 @@ paths:
         '200':
           description: The directory has been copied
         '404':
-          description: The top layer was not found
+          description: The item store was not found
         '409':
-          description: The top layer is not in the OPEN state
+          description: The item store is not in the OPEN state
 
-  /layers/top/copy-file-to:
+  /itemstore/copy-file-to:
     post:
-      operationId: layersTopCopyFileToPost
-      summary: Copies a file into the top layer
+      operationId: itemstoreCopyFileToPost
+      summary: Copies a file into the item store
       requestBody:
         content:
           application/json:
@@ -242,9 +242,9 @@ paths:
         '200':
           description: The file has been copied
         '404':
-          description: The top layer was not found
+          description: The item store was not found
         '409':
-          description: The top layer is not in the OPEN state
+          description: The item store is not in the OPEN state
 
   /layers/top:
     get:
