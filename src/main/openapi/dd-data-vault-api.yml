@@ -161,18 +161,10 @@ paths:
         '409':
           description: The layer is not in the CLOSED state
 
-  /layers/{layerId}/create-directory:
+  /layers/top/create-directory:
     post:
-      operationId: layersIdCreateDirectoryPost
-      summary: Creates a new directory in the layer with the specified id
-      parameters:
-        - name: layerId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-          description: The timestamp of the layer, in milliseconds since the epoch
+      operationId: layersTopCreateDirectoryPost
+      summary: Creates a new directory in the top layer
       requestBody:
         content:
           application/json:
@@ -182,72 +174,14 @@ paths:
         '200':
           description: The directory has been created
         '404':
-          description: No layer with the specified id was found
+          description: The top layer was not found
         '409':
-          description: The layer is not in the OPEN state
+          description: The top layer is not in the OPEN state
 
-  /layers/{layerId}/delete-directory:
+  /layers/top/copy-directory-into:
     post:
-      operationId: layersIdDeleteDirectoryPost
-      summary: Deletes a directory from the layer with the specified id
-      parameters:
-        - name: layerId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-          description: The timestamp of the layer, in milliseconds since the epoch
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeleteDirectoryRequest'
-      responses:
-        '200':
-          description: The directory has been deleted
-        '404':
-          description: No layer with the specified id was found
-        '409':
-          description: The layer is not in the OPEN state
-
-  /layers/{layerId}/delete-files:
-    post:
-      operationId: layersIdDeleteFilesPost
-      summary: Deletes files from the layer with the specified id
-      parameters:
-        - name: layerId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-          description: The timestamp of the layer, in milliseconds since the epoch
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeleteFilesRequest'
-      responses:
-        '200':
-          description: The files have been deleted
-        '404':
-          description: No layer with the specified id was found
-        '409':
-          description: The layer is not in the OPEN state
-
-  /layers/{layerId}/copy-directory-into:
-    post:
-      operationId: layersIdCopyDirectoryIntoPost
-      summary: Copies a directory into the layer with the specified id
-      parameters:
-        - name: layerId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-          description: The timestamp of the layer, in milliseconds since the epoch
+      operationId: layersTopCopyDirectoryIntoPost
+      summary: Copies a directory into the top layer
       requestBody:
         content:
           application/json:
@@ -257,22 +191,14 @@ paths:
         '200':
           description: The directory has been copied
         '404':
-          description: No layer with the specified id was found
+          description: The top layer was not found
         '409':
-          description: The layer is not in the OPEN state
+          description: The top layer is not in the OPEN state
 
-  /layers/{layerId}/copy-file-to:
+  /layers/top/copy-file-to:
     post:
-      operationId: layersIdCopyFileToPost
-      summary: Copies a file into the layer with the specified id
-      parameters:
-        - name: layerId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-          description: The timestamp of the layer, in milliseconds since the epoch
+      operationId: layersTopCopyFileToPost
+      summary: Copies a file into the top layer
       requestBody:
         content:
           application/json:
@@ -282,9 +208,9 @@ paths:
         '200':
           description: The file has been copied
         '404':
-          description: No layer with the specified id was found
+          description: The top layer was not found
         '409':
-          description: The layer is not in the OPEN state
+          description: The top layer is not in the OPEN state
 
   /layers/top:
     get:
