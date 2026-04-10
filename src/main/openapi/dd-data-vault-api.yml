@@ -73,6 +73,7 @@ paths:
       operationId: importsPost
       summary: Submits a new import job
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -166,6 +167,7 @@ paths:
       operationId: itemstoreCreateDirectoryPost
       summary: Creates a new directory in the item store
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -183,6 +185,7 @@ paths:
       operationId: itemstoreDeleteDirectoryPost
       summary: Deletes a directory from the item store
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -200,6 +203,7 @@ paths:
       operationId: itemstoreDeleteFilesPost
       summary: Deletes files from the item store
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -217,6 +221,7 @@ paths:
       operationId: itemstoreCopyDirectoryIntoPost
       summary: Copies a directory into the item store
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -234,6 +239,7 @@ paths:
       operationId: itemstoreCopyFileToPost
       summary: Copies a file into the item store
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -301,6 +307,7 @@ paths:
       operationId: consistencyChecksPost
       summary: Requests a consistency check of the data vault
       requestBody:
+        required: true
         content:
           application/json:
             schema:
