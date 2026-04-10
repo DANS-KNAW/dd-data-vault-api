@@ -43,7 +43,7 @@ paths:
             enum: [ application/json, text/plain ]
             default: application/json
       responses:
-        200:
+        '200':
           description: description of the service
           content:
             text/plain:
@@ -61,7 +61,7 @@ paths:
       operationId: importsGet
       summary: Returns a list of all current import jobs and their status
       responses:
-        200:
+        '200':
           description: A list of all current import jobs
           content:
             application/json:
@@ -73,12 +73,13 @@ paths:
       operationId: importsPost
       summary: Submits a new import job
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ImportCommand'
       responses:
-        201:
+        '201':
           description: The job has been submitted
           content:
             application/json:
@@ -98,13 +99,13 @@ paths:
             format: uuid
           description: The unique identifier of the job
       responses:
-        200:
+        '200':
           description: The job with the specified id
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImportJobStatus'
-        404:
+        '404':
           description: No job with the specified id was found
 
   /layers:
@@ -112,7 +113,7 @@ paths:
       operationId: layersPost
       summary: Creates a new top layer, closing and archiving the current top layer
       responses:
-        201:
+        '201':
           description: The new top layer has been created
           content:
             application/json:
@@ -132,13 +133,13 @@ paths:
             format: int64
           description: The timestamp of the layer, in milliseconds since the epoch
       responses:
-        200:
+        '200':
           description: The status of the layer with the specified id
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/LayerStatus'
-        404:
+        '404':
           description: No layer with the specified id was found
 
   /layers/{layerId}/archive:
@@ -154,17 +155,119 @@ paths:
             format: int64
           description: The timestamp of the layer, in milliseconds since the epoch
       responses:
-        202:
+        '202':
           description: The request to archive the layer has been accepted
-        404:
+        '404':
           description: No layer with the specified id was found
+        '409':
+          description: The layer is not in the CLOSED state
+
+  /itemstore/create-directory:
+    post:
+      operationId: itemstoreCreateDirectoryPost
+      summary: Creates a new directory in the item store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDirectoryRequest'
+      responses:
+        '200':
+          description: The directory has been created
+        '400':
+          description: Bad request
+        '404':
+          description: The item store was not found
+        '409':
+          description: The item store is not in the OPEN state
+
+  /itemstore/delete-directory:
+    post:
+      operationId: itemstoreDeleteDirectoryPost
+      summary: Deletes a directory from the item store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteDirectoryRequest'
+      responses:
+        '200':
+          description: The directory has been deleted
+        '400':
+          description: Bad request
+        '404':
+          description: The item store was not found
+        '409':
+          description: The item store is not in the OPEN state
+
+  /itemstore/delete-files:
+    post:
+      operationId: itemstoreDeleteFilesPost
+      summary: Deletes files from the item store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteFilesRequest'
+      responses:
+        '200':
+          description: The files have been deleted
+        '400':
+          description: Bad request
+        '404':
+          description: The item store was not found
+        '409':
+          description: The item store is not in the OPEN state
+
+  /itemstore/copy-directory-into:
+    post:
+      operationId: itemstoreCopyDirectoryIntoPost
+      summary: Copies a directory into the item store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CopyDirectoryIntoRequest'
+      responses:
+        '200':
+          description: The directory has been copied
+        '400':
+          description: Bad request
+        '404':
+          description: The item store was not found
+        '409':
+          description: The item store is not in the OPEN state
+
+  /itemstore/copy-file-to:
+    post:
+      operationId: itemstoreCopyFileToPost
+      summary: Copies a file into the item store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CopyFileToRequest'
+      responses:
+        '200':
+          description: The file has been copied
+        '400':
+          description: Bad request
+        '404':
+          description: The item store was not found
+        '409':
+          description: The item store is not in the OPEN state
 
   /layers/top:
     get:
       operationId: layersTopGet
       summary: Returns the status of the top layer
       responses:
-        200:
+        '200':
           description: The status of the top layer
           content:
             application/json:
@@ -176,7 +279,7 @@ paths:
       operationId: layersIdsGet
       summary: Returns a list of all layer ids
       responses:
-        200:
+        '200':
           description: A list of all layer ids
           content:
             application/json:
@@ -202,7 +305,7 @@ paths:
           schema:
             type: integer
       responses:
-        200:
+        '200':
           description: Information object the requested version
           content:
             application/json:
@@ -214,12 +317,13 @@ paths:
       operationId: consistencyChecksPost
       summary: Requests a consistency check of the data vault
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ConsistencyCheckRequest'
       responses:
-        202:
+        '202':
           description: The consistency check has been requested
           content:
             application/json:
@@ -238,19 +342,21 @@ paths:
             type: string
             format: uuid
       responses:
-        200:
+        '200':
           description: The status of the consistency check with the specified id
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConsistencyCheckResult'
-        404:
+        '404':
           description: No consistency check with the specified id was found
 
 components:
   schemas:
     ConsistencyCheckRequest:
       type: object
+      # layerId cannot be required because that would make LAYER_IDS type requests impossible
+      required: [ type ]
       properties:
         type:
           type: string
@@ -306,6 +412,7 @@ components:
 
     ImportCommand:
       type: object
+      required: [ path ]
       properties:
         path:
           type: string
@@ -363,6 +470,61 @@ components:
           type: integer
           format: int64
           description: The size of the layer in bytes
+
+    CreateDirectoryRequest:
+      type: object
+      required: [ path ]
+      properties:
+        path:
+          type: string
+          format: path
+          description: The path to the directory to create
+
+    DeleteDirectoryRequest:
+      type: object
+      required: [ path ]
+      properties:
+        path:
+          type: string
+          format: path
+          description: The path to the directory to delete
+
+    DeleteFilesRequest:
+      type: object
+      required: [ paths ]
+      properties:
+        paths:
+          type: array
+          items:
+            type: string
+            format: path
+          description: The paths to the files to delete
+
+    CopyDirectoryIntoRequest:
+      type: object
+      required: [ source, destination ]
+      properties:
+        source:
+          type: string
+          format: path
+          description: The source directory path
+        destination:
+          type: string
+          format: path
+          description: The destination directory path in the item store
+
+    CopyFileToRequest:
+      type: object
+      required: [ source, destination ]
+      properties:
+        source:
+          type: string
+          format: path
+          description: The source file path
+        destination:
+          type: string
+          format: path
+          description: The destination path in the item store
 
     OcflObjectVersion:
       type: object
