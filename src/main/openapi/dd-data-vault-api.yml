@@ -345,6 +345,7 @@ components:
   schemas:
     ConsistencyCheckRequest:
       type: object
+      required: [ type, layerId ]
       properties:
         type:
           type: string
@@ -400,6 +401,7 @@ components:
 
     ImportCommand:
       type: object
+      required: [ path ]
       properties:
         path:
           type: string
@@ -460,6 +462,7 @@ components:
 
     CreateDirectoryRequest:
       type: object
+      required: [ path ]
       properties:
         path:
           type: string
@@ -468,6 +471,7 @@ components:
 
     DeleteDirectoryRequest:
       type: object
+      required: [ path ]
       properties:
         path:
           type: string
@@ -476,6 +480,7 @@ components:
 
     DeleteFilesRequest:
       type: object
+      required: [ paths ]
       properties:
         paths:
           type: array
@@ -486,6 +491,7 @@ components:
 
     CopyDirectoryIntoRequest:
       type: object
+      required: [ source, destination ]
       properties:
         source:
           type: string
@@ -498,6 +504,7 @@ components:
 
     CopyFileToRequest:
       type: object
+      required: [ source, destination ]
       properties:
         source:
           type: string
