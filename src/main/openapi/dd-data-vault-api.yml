@@ -175,6 +175,8 @@ paths:
       responses:
         '200':
           description: The directory has been created
+        '400':
+          description: Bad request
         '404':
           description: The item store was not found
         '409':
@@ -193,6 +195,8 @@ paths:
       responses:
         '200':
           description: The directory has been deleted
+        '400':
+          description: Bad request
         '404':
           description: The item store was not found
         '409':
@@ -211,6 +215,8 @@ paths:
       responses:
         '200':
           description: The files have been deleted
+        '400':
+          description: Bad request
         '404':
           description: The item store was not found
         '409':
@@ -229,6 +235,8 @@ paths:
       responses:
         '200':
           description: The directory has been copied
+        '400':
+          description: Bad request
         '404':
           description: The item store was not found
         '409':
@@ -247,6 +255,8 @@ paths:
       responses:
         '200':
           description: The file has been copied
+        '400':
+          description: Bad request
         '404':
           description: The item store was not found
         '409':
