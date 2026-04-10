@@ -345,7 +345,8 @@ components:
   schemas:
     ConsistencyCheckRequest:
       type: object
-      required: [ type, layerId ]
+      # layerId cannot be required because that would make LAYER_IDS type requests impossible
+      required: [ type ]
       properties:
         type:
           type: string
@@ -513,7 +514,7 @@ components:
         destination:
           type: string
           format: path
-          description: The destination path in the layer
+          description: The destination path in the item store
 
     OcflObjectVersion:
       type: object
