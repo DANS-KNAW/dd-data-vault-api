@@ -452,10 +452,10 @@ paths:
         '404':
           description: Object or version not found
 
-  /ocfl/objects/{id}/versions/{nr}/inventory:
+  /ocfl/objects/{id}/versions/{nr}/files:
     get:
-      operationId: ocflObjectsIdVersionsNrInventoryGet
-      summary: Get the OCFL inventory at a specific version
+      operationId: ocflObjectsIdVersionsNrFilesGet
+      summary: List files in a specific version of an OCFL object
       tags:
         - ocfl
       parameters:
@@ -472,11 +472,13 @@ paths:
           description: Version number or 'latest'
       responses:
         '200':
-          description: OCFL inventory
+          description: List of file details
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/OcflFileDetails'
         '404':
           description: Object or version not found
 
@@ -737,5 +739,17 @@ components:
         name:
           type: string
         address:
+          type: string
+
+    OcflFileDetails:
+      type: object
+      properties:
+        path:
+          type: string
+        fixity:
+          type: object
+          additionalProperties:
+            type: string
+        storageRelativePath:
           type: string
 
