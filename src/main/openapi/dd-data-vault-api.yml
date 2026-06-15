@@ -142,10 +142,31 @@ paths:
         '404':
           description: No layer with the specified id was found
 
+  /layers/{layerId}/close:
+    post:
+      operationId: layersIdClosePost
+      summary: Closes the layer with the specified id. This is a synchronous operation.
+      parameters:
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The timestamp of the layer, in milliseconds since the epoch
+      responses:
+        '200':
+          description: The layer has been closed.
+        '400':
+          description: The layer with the specified id cannot be archived, because its current state is not OPEN.
+        '404':
+          description: No layer with the specified id was found
+
   /layers/{layerId}/archive:
     post:
       operationId: layersIdArchivePost
-      summary: Requests the archiving of the layer with the specified id. The operation may be performed asynchronously, so the caller should check the layer's status to determine when the archiving is complete.
+      summary: Requests the archiving of the layer with the specified id. The operation may be performed asynchronously,
+        so the caller should check the layer's status to determine when the archiving is complete.
       parameters:
         - name: layerId
           in: path
@@ -157,6 +178,48 @@ paths:
       responses:
         '202':
           description: The request to archive the layer has been accepted
+        '400':
+          description: The layer with the specified id cannot be archived, because its current state is not CLOSED or there is already an archive file.
+            To overwrite an archive file with the contents of a reopened layer use the /rearchive endpoint.
+        '404':
+          description: No layer with the specified id was found
+
+  /layers/{layerId}/rearchive:
+    post:
+      operationId: layersIdRearchivePost
+      summary: Requests the rearchiving of the layer with the specified id. The operation may be performed asynchronously,
+        so the caller should check the layer's status to determine when the archiving is complete.
+      parameters:
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The timestamp of the layer, in milliseconds since the epoch
+      responses:
+        '202':
+          description: The request to archive the layer has been accepted
+        '404':
+          description: No layer with the specified id was found
+
+  /layers/{layerId}/reopen:
+    post:
+      operationId: layersIdReopenPost
+      summary: Requests the reopening of the layer with the specified id. The operation may be performed asynchronously, so the caller should check the layer's status to determine when the reopening is complete.
+      parameters:
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The timestamp of the layer, in milliseconds since the epoch
+      responses:
+        '202':
+          description: The request to reopen the layer has been accepted
+        '400':
+          description: The layer with the specified id cannot be reopened, because its current state is not ARCHIVED or CLOSED
         '404':
           description: No layer with the specified id was found
         '409':
