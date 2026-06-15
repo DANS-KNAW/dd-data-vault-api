@@ -312,6 +312,111 @@ paths:
               schema:
                 $ref: '#/components/schemas/OcflObjectVersion'
 
+  /ocfl/objects:
+    get:
+      operationId: ocflObjectsGet
+      summary: List all OCFL object IDs
+      tags:
+        - ocfl
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of object IDs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /ocfl/objects/{id}/details:
+    get:
+      operationId: ocflObjectsIdDetailsGet
+      summary: Get detailed overview of an OCFL object
+      tags:
+        - ocfl
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object details including version history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OcflObjectDetails'
+        '404':
+          description: Object not found
+
+  /ocfl/objects/{id}/versions/{nr}/details:
+    get:
+      operationId: ocflObjectsIdVersionsNrDetailsGet
+      summary: Get details of a specific version of an OCFL object
+      tags:
+        - ocfl
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: nr
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Version number or 'latest'
+      responses:
+        '200':
+          description: Version details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OcflVersionDetails'
+        '404':
+          description: Object or version not found
+
+  /ocfl/objects/{id}/versions/{nr}/inventory:
+    get:
+      operationId: ocflObjectsIdVersionsNrInventoryGet
+      summary: Get the OCFL inventory at a specific version
+      tags:
+        - ocfl
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: nr
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Version number or 'latest'
+      responses:
+        '200':
+          description: OCFL inventory
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Object or version not found
+
   /consistency-checks:
     post:
       operationId: consistencyChecksPost
@@ -535,4 +640,39 @@ components:
         created:
           type: string
           format: date-time
+
+    OcflObjectDetails:
+      type: object
+      properties:
+        id:
+          type: string
+        headVersionNum:
+          type: string
+        digestAlgorithm:
+          type: string
+        objectOcflVersion:
+          type: string
+
+    OcflVersionDetails:
+      type: object
+      properties:
+        objectId:
+          type: string
+        versionNum:
+          type: string
+        created:
+          type: string
+          format: date-time
+        message:
+          type: string
+        user:
+          $ref: '#/components/schemas/OcflUser'
+
+    OcflUser:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
 
