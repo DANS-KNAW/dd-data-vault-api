@@ -142,10 +142,31 @@ paths:
         '404':
           description: No layer with the specified id was found
 
+  /layers/{layerId}/close:
+    post:
+      operationId: layersIdClosePost
+      summary: Closes the layer with the specified id. This is a synchronous operation.
+      parameters:
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The timestamp of the layer, in milliseconds since the epoch
+      responses:
+        '200':
+          description: The layer has been closed.
+        '400':
+          description: The layer with the specified id cannot be archived, because its current state is not OPEN.
+        '404':
+          description: No layer with the specified id was found
+
   /layers/{layerId}/archive:
     post:
       operationId: layersIdArchivePost
-      summary: Requests the archiving of the layer with the specified id. The operation may be performed asynchronously, so the caller should check the layer's status to determine when the archiving is complete.
+      summary: Requests the archiving of the layer with the specified id. The operation may be performed asynchronously,
+        so the caller should check the layer's status to determine when the archiving is complete.
       parameters:
         - name: layerId
           in: path
@@ -157,6 +178,48 @@ paths:
       responses:
         '202':
           description: The request to archive the layer has been accepted
+        '400':
+          description: The layer with the specified id cannot be archived, because its current state is not CLOSED or there is already an archive file.
+            To overwrite an archive file with the contents of a reopened layer use the /rearchive endpoint.
+        '404':
+          description: No layer with the specified id was found
+
+  /layers/{layerId}/rearchive:
+    post:
+      operationId: layersIdRearchivePost
+      summary: Requests the rearchiving of the layer with the specified id. The operation may be performed asynchronously,
+        so the caller should check the layer's status to determine when the archiving is complete.
+      parameters:
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The timestamp of the layer, in milliseconds since the epoch
+      responses:
+        '202':
+          description: The request to archive the layer has been accepted
+        '404':
+          description: No layer with the specified id was found
+
+  /layers/{layerId}/reopen:
+    post:
+      operationId: layersIdReopenPost
+      summary: Requests the reopening of the layer with the specified id. The operation may be performed asynchronously, so the caller should check the layer's status to determine when the reopening is complete.
+      parameters:
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The timestamp of the layer, in milliseconds since the epoch
+      responses:
+        '202':
+          description: The request to reopen the layer has been accepted
+        '400':
+          description: The layer with the specified id cannot be reopened, because its current state is not ARCHIVED or CLOSED
         '404':
           description: No layer with the specified id was found
         '409':
@@ -311,6 +374,113 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OcflObjectVersion'
+
+  /ocfl/objects:
+    get:
+      operationId: ocflObjectsGet
+      summary: List all OCFL object IDs
+      tags:
+        - ocfl
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of object IDs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /ocfl/objects/{id}/details:
+    get:
+      operationId: ocflObjectsIdDetailsGet
+      summary: Get detailed overview of an OCFL object
+      tags:
+        - ocfl
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object details including version history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OcflObjectDetails'
+        '404':
+          description: Object not found
+
+  /ocfl/objects/{id}/versions/{nr}/details:
+    get:
+      operationId: ocflObjectsIdVersionsNrDetailsGet
+      summary: Get details of a specific version of an OCFL object
+      tags:
+        - ocfl
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: nr
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Version number or 'latest'
+      responses:
+        '200':
+          description: Version details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OcflVersionDetails'
+        '404':
+          description: Object or version not found
+
+  /ocfl/objects/{id}/versions/{nr}/files:
+    get:
+      operationId: ocflObjectsIdVersionsNrFilesGet
+      summary: List files in a specific version of an OCFL object
+      tags:
+        - ocfl
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: nr
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Version number or 'latest'
+      responses:
+        '200':
+          description: List of file details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OcflFileDetails'
+        '404':
+          description: Object or version not found
 
   /consistency-checks:
     post:
@@ -535,4 +705,51 @@ components:
         created:
           type: string
           format: date-time
+
+    OcflObjectDetails:
+      type: object
+      properties:
+        id:
+          type: string
+        headVersionNum:
+          type: string
+        digestAlgorithm:
+          type: string
+        objectOcflVersion:
+          type: string
+
+    OcflVersionDetails:
+      type: object
+      properties:
+        objectId:
+          type: string
+        versionNum:
+          type: string
+        created:
+          type: string
+          format: date-time
+        message:
+          type: string
+        user:
+          $ref: '#/components/schemas/OcflUser'
+
+    OcflUser:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+
+    OcflFileDetails:
+      type: object
+      properties:
+        path:
+          type: string
+        fixity:
+          type: object
+          additionalProperties:
+            type: string
+        storageRelativePath:
+          type: string
 
