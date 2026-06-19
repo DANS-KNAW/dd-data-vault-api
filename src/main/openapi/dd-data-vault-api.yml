@@ -424,6 +424,59 @@ paths:
         '404':
           description: Object not found
 
+  /ocfl/objects/{id}/extension-files:
+    get:
+      operationId: ocflObjectsIdExtensionFilesGet
+      summary: List all extension files for an OCFL object
+      tags:
+        - ocfl
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of extension file details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OcflExtensionFileDetails'
+        '404':
+          description: Object not found
+
+  /ocfl/objects/{id}/extension-files/{path}:
+    get:
+      operationId: ocflObjectsIdExtensionFilesPathGet
+      summary: Get the content of a specific extension file
+      tags:
+        - ocfl
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: path
+          in: path
+          required: true
+          description: The path to the specific extension file (can contain slashes)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The content of the file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Object or file not found
+
   /ocfl/objects/{id}/versions/{nr}/details:
     get:
       operationId: ocflObjectsIdVersionsNrDetailsGet
@@ -739,6 +792,14 @@ components:
         name:
           type: string
         address:
+          type: string
+
+    OcflExtensionFileDetails:
+      type: object
+      properties:
+        path:
+          type: string
+        storageRelativePath:
           type: string
 
     OcflFileDetails:
