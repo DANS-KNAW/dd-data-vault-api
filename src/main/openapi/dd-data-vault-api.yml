@@ -448,9 +448,9 @@ paths:
         '404':
           description: Object not found
 
-  /ocfl/objects/{id}/extension-files/{path}:
+  /ocfl/objects/{id}/extension-file:
     get:
-      operationId: ocflObjectsIdExtensionFilesPathGet
+      operationId: ocflObjectsIdExtensionFileGet
       summary: Get the content of a specific extension file
       tags:
         - ocfl
@@ -461,7 +461,7 @@ paths:
           schema:
             type: string
         - name: path
-          in: path
+          in: query
           required: true
           description: The path to the specific extension file (can contain slashes)
           schema:
