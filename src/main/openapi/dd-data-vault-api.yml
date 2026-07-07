@@ -314,7 +314,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CopyFileToRequest'
+              $ref: '#/components/schemas/CopyFileIntoRequest'
       responses:
         '200':
           description: The file has been copied
@@ -334,7 +334,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CopyFileFromRequest'
+              $ref: '#/components/schemas/CopyFileOutOfRequest'
       responses:
         '200':
           description: The file has been copied
@@ -756,7 +756,7 @@ components:
           format: path
           description: The destination directory path in the item store
 
-    CopyFileToRequest:
+    CopyFileIntoRequest:
       type: object
       required: [ source, destination ]
       properties:
@@ -769,7 +769,7 @@ components:
           format: path
           description: The destination path in the item store
 
-    CopyFileFromRequest:
+    CopyFileOutOfRequest:
       type: object
       required: [ source, destination ]
       properties:
