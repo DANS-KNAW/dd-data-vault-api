@@ -305,9 +305,9 @@ paths:
         '409':
           description: The item store is not in the OPEN state
 
-  /itemstore/copy-file-to:
+  /itemstore/copy-file-into:
     post:
-      operationId: itemstoreCopyFileToPost
+      operationId: itemstoreCopyFileIntoPost
       summary: Copies a file into the item store
       requestBody:
         required: true
@@ -315,6 +315,26 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CopyFileToRequest'
+      responses:
+        '200':
+          description: The file has been copied
+        '400':
+          description: Bad request
+        '404':
+          description: The item store was not found
+        '409':
+          description: The item store is not in the OPEN state
+
+  /itemstore/copy-file-out-of:
+    post:
+      operationId: itemstoreCopyFileOutOfPost
+      summary: Copies a file out of the item store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CopyFileFromRequest'
       responses:
         '200':
           description: The file has been copied
@@ -748,6 +768,19 @@ components:
           type: string
           format: path
           description: The destination path in the item store
+
+    CopyFileFromRequest:
+      type: object
+      required: [ source, destination ]
+      properties:
+        source:
+          type: string
+          format: path
+          description: The source path in the item store
+        destination:
+          type: string
+          format: path
+          description: The destination file path
 
     OcflObjectVersion:
       type: object
