@@ -108,6 +108,14 @@ paths:
         '404':
           description: No job with the specified id was found
 
+  /imports/cleanup:
+    post:
+      operationId: importsCleanupPost
+      summary: Cleans up the inbox and outbox of all successfully finished import jobs
+      responses:
+        '200':
+          description: Cleanup completed successfully
+
   /layers:
     post:
       operationId: layersPost
