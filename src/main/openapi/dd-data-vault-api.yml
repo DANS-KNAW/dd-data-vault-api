@@ -392,7 +392,13 @@ paths:
   /ocfl/objects:
     get:
       operationId: ocflObjectsGet
-      summary: List all OCFL object IDs
+      summary: List OCFL object IDs
+      description: >-
+        By default, lists ingested objects. When blocked is true, lists blocked objects,
+        including uningested objects. When blocked is false, lists unblocked ingested
+        objects only. When blocked is omitted, includeUningested=true includes both
+        ingested and uningested objects. The blocked filter takes precedence over
+        includeUningested when both are supplied.
       tags:
         - ocfl
       parameters:
@@ -406,6 +412,17 @@ paths:
           schema:
             type: integer
             default: 0
+        - name: blocked
+          in: query
+          description: Filter by blocked status; omitted returns both blocked and unblocked objects.
+          schema:
+            type: boolean
+        - name: includeUningested
+          in: query
+          description: Include uningested objects when blocked is omitted; ignored when blocked is supplied.
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: List of object IDs
@@ -415,6 +432,44 @@ paths:
                 type: array
                 items:
                   type: string
+
+  /ocfl/objects/{id}/blocked:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: ocflObjectsIdBlockedGet
+      summary: Get the blocked status of an object
+      tags:
+        - ocfl
+      responses:
+        '200':
+          description: Whether the object is blocked
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '404':
+          description: Object not found
+    delete:
+      operationId: ocflObjectsIdBlockedDelete
+      summary: Clear the blocked status of an object
+      description: Clears the blocked status, including if the object is already unblocked.
+      tags:
+        - ocfl
+      responses:
+        '200':
+          description: The resulting blocked status, false
+          content:
+            application/json:
+              schema:
+                type: boolean
+                enum: [ false ]
+        '404':
+          description: Object not found
 
   /ocfl/objects/{id}/details:
     get:
