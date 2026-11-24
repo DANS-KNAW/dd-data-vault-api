@@ -45,7 +45,36 @@ paths:
   /imports:
     get:
       operationId: importsGet
-      summary: Returns a list of all current import jobs and their status
+      summary: Returns import jobs and their status
+      description: Results are ordered by creation time and job ID. Filters are combined before paging.
+      parameters:
+        - name: status
+          in: query
+          description: Repeat to select multiple statuses; omit to select all statuses.
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [PENDING, RUNNING, SUCCESS, FAILED]
+        - name: limit
+          in: query
+          description: Maximum number of jobs to return; must be positive.
+          schema:
+            type: integer
+            minimum: 1
+        - name: offset
+          in: query
+          description: Number of jobs to skip; requires limit and defaults to zero.
+          schema:
+            type: integer
+            minimum: 0
+        - name: batch
+          in: query
+          description: Exact batch path, relative to the configured inbox or absolute within it.
+          schema:
+            type: string
       responses:
         '200':
           description: A list of all current import jobs
@@ -55,6 +84,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ImportJobStatus'
+        '400':
+          description: Invalid status, pagination, or batch path outside the configured inbox.
     post:
       operationId: importsPost
       summary: Submits a new import job
@@ -101,6 +132,34 @@ paths:
       responses:
         '200':
           description: Cleanup completed successfully
+
+  /imports/restage-failed:
+    post:
+      operationId: importsRestageFailedPost
+      summary: Restage failed imports in the inbox
+      description: |
+        Restores failed object directories without starting a new job or modifying job records.
+        A canonical UUID identifies an import job, including a single-object job; otherwise the
+        selector is a batch path relative to or contained in the inbox. Prefix a UUID-shaped
+        batch name with ./ to select it as a path. Missing or empty failed directories are no-ops.
+        A filesystem failure or concurrent filesystem changes may leave a partially restaged batch.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestageFailedRequest'
+      responses:
+        '200':
+          description: Restaging completed successfully
+        '400':
+          description: Invalid selector or path
+        '404':
+          description: Import job not found
+        '409':
+          description: An active import job or destination conflict prevents restaging
+        '500':
+          description: Filesystem failure; some objects may already have been restaged
 
   /layers:
     post:
@@ -697,6 +756,14 @@ components:
           type: string
         version:
           type: string
+
+    RestageFailedRequest:
+      type: object
+      required: [ selector ]
+      properties:
+        selector:
+          type: string
+          description: Import job UUID or inbox batch path
 
     ImportCommand:
       type: object
