@@ -394,11 +394,8 @@ paths:
       operationId: ocflObjectsGet
       summary: List OCFL object IDs
       description: >-
-        By default, lists ingested objects. When blocked is true, lists blocked objects,
-        including uningested objects. When blocked is false, lists unblocked ingested
-        objects only. When blocked is omitted, includeUningested=true includes both
-        ingested and uningested objects. The blocked filter takes precedence over
-        includeUningested when both are supplied.
+        Lists all objects by default. The blocked and ingested filters are independent;
+        when both are supplied, only objects matching both are returned.
       tags:
         - ocfl
       parameters:
@@ -417,12 +414,11 @@ paths:
           description: Filter by blocked status; omitted returns both blocked and unblocked objects.
           schema:
             type: boolean
-        - name: includeUningested
+        - name: ingested
           in: query
-          description: Include uningested objects when blocked is omitted; ignored when blocked is supplied.
+          description: Filter by ingestion status; omitted returns both ingested and uningested objects.
           schema:
             type: boolean
-            default: false
       responses:
         '200':
           description: List of object IDs
