@@ -512,17 +512,12 @@ paths:
     delete:
       operationId: ocflObjectsIdBlockedDelete
       summary: Clear the blocked status of an object
-      description: Clears the blocked status, including if the object is already unblocked.
+      description: Idempotently clears the blocked status; an already unblocked object also succeeds.
       tags:
         - ocfl
       responses:
-        '200':
-          description: The resulting blocked status, false
-          content:
-            application/json:
-              schema:
-                type: boolean
-                enum: [ false ]
+        '204':
+          description: Object is unblocked; no response body
         '404':
           description: Object not found
 
