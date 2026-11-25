@@ -811,15 +811,24 @@ components:
           description: A message describing the current status of the job
     LayerStatus:
       type: object
+      required: [ layerId, status, sizeInBytes ]
       properties:
         layerId:
           type: integer
           format: int64
           description: The timestamp of the layer, in milliseconds since the epoch
+        status:
+          type: string
+          enum: [ OPEN, CLOSED, ARCHIVED ]
+          description: The current status of the layer
         sizeInBytes:
           type: integer
           format: int64
+          nullable: true
           description: The size of the layer in bytes
+        message:
+          type: string
+          description: An optional message describing the layer status
 
     CreateDirectoryRequest:
       type: object
