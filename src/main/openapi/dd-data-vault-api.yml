@@ -654,6 +654,102 @@ paths:
         '404':
           description: Object or version not found
 
+  /object-version-properties/{id}/{nr}:
+    get:
+      operationId: objectVersionPropertiesIdNrGet
+      summary: Get all object version properties of a specific version of an OCFL object
+      description: >-
+        Object version properties are defined by the DANS object-version-properties OCFL extension. The allowed properties and their types are defined in the
+        property registry of the storage root.
+      tags:
+        - objectVersionProperties
+      parameters:
+        - $ref: '#/components/parameters/ObjectId'
+        - $ref: '#/components/parameters/VersionNumberOrLatest'
+      responses:
+        '200':
+          description: The properties of the version, as a JSON object mapping property names to their values
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: { }
+        '400':
+          description: Invalid version number
+        '404':
+          description: Object or version not found
+
+  /object-version-properties/{id}/{nr}/{name}:
+    get:
+      operationId: objectVersionPropertiesIdNrNameGet
+      summary: Get the value of an object version property
+      tags:
+        - objectVersionProperties
+      parameters:
+        - $ref: '#/components/parameters/ObjectId'
+        - $ref: '#/components/parameters/VersionNumberOrLatest'
+        - $ref: '#/components/parameters/PropertyName'
+      responses:
+        '200':
+          description: The value of the property; any JSON value
+          content:
+            application/json:
+              schema: { }
+        '400':
+          description: Invalid version number
+        '404':
+          description: Object, version or property not found
+    put:
+      operationId: objectVersionPropertiesIdNrNamePut
+      summary: Set the value of an object version property
+      description: >-
+        Adds the property or replaces its value. The resulting properties of the version are validated against the property registry of the storage root and
+        the resulting object_version_properties.json is validated against its schema before anything is written. If validation fails, the stored properties
+        are left unchanged.
+      tags:
+        - objectVersionProperties
+      parameters:
+        - $ref: '#/components/parameters/ObjectId'
+        - $ref: '#/components/parameters/VersionNumber'
+        - $ref: '#/components/parameters/PropertyName'
+      requestBody:
+        required: true
+        description: The new value of the property; any JSON value. A string value must be sent as a JSON string, i.e. in double quotes.
+        content:
+          application/json:
+            schema: { }
+      responses:
+        '204':
+          description: The property has been set
+        '400':
+          description: Invalid version number, or the new value is invalid according to the property registry or schema. The response body contains the
+            reason.
+        '404':
+          description: Object or version not found
+        '409':
+          description: The object is blocked or the item store cannot be written to
+    delete:
+      operationId: objectVersionPropertiesIdNrNameDelete
+      summary: Delete an object version property
+      description: >-
+        Removes the property from the version. The resulting properties of the version are validated against the property registry of the storage root
+        before anything is written, so a required property cannot be deleted.
+      tags:
+        - objectVersionProperties
+      parameters:
+        - $ref: '#/components/parameters/ObjectId'
+        - $ref: '#/components/parameters/VersionNumber'
+        - $ref: '#/components/parameters/PropertyName'
+      responses:
+        '204':
+          description: The property has been deleted
+        '400':
+          description: Invalid version number, or the property is required according to the property registry. The response body contains the reason.
+        '404':
+          description: Object, version or property not found
+        '409':
+          description: The object is blocked or the item store cannot be written to
+
   /consistency-checks:
     post:
       operationId: consistencyChecksPost
@@ -694,6 +790,36 @@ paths:
           description: No consistency check with the specified id was found
 
 components:
+  parameters:
+    ObjectId:
+      name: id
+      in: path
+      required: true
+      description: The OCFL object ID
+      schema:
+        type: string
+    VersionNumber:
+      name: nr
+      in: path
+      required: true
+      description: The version number, with or without 'v' prefix (e.g. '1' or 'v1')
+      schema:
+        type: string
+    VersionNumberOrLatest:
+      name: nr
+      in: path
+      required: true
+      description: The version number, with or without 'v' prefix (e.g. '1' or 'v1'), or 'latest'
+      schema:
+        type: string
+    PropertyName:
+      name: name
+      in: path
+      required: true
+      description: The name of the property, as defined in the property registry of the storage root
+      schema:
+        type: string
+
   schemas:
     ConsistencyCheckRequest:
       type: object
